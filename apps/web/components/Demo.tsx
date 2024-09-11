@@ -47,7 +47,7 @@ const RowRenderer = ({
         ...style,
       }}
       className={cn(
-        'flex flex-col items-start justify-center gap-2 whitespace-pre-wrap p-4'
+        'flex flex-col items-start justify-center gap-2 whitespace-pre-wrap'
       )}
     >
       <div className='flex items-center gap-3'>
