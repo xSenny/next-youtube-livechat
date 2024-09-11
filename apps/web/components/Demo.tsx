@@ -51,12 +51,6 @@ const RowRenderer = ({
       )}
     >
       <div className='flex items-center gap-3'>
-        <div className='rounded-md bg-accent p-3'>
-          <div className='rounded-lg bg-primary mb-2 px-2 w-fit'>
-            {message.name}
-          </div>
-          <span className='relative inline-block'>{message.message}</span>
-        </div>
         <Avatar className='flex items-center justify-center'>
           <AvatarImage
             src={message.avatar}
@@ -65,6 +59,12 @@ const RowRenderer = ({
             height={6}
           />
         </Avatar>
+        <div className='rounded-md bg-green-500 p-3'>
+          <div className='rounded-lg bg-primary mb-2 px-2 w-fit'>
+            {message.name}
+          </div>
+          <span className='relative inline-block'>{message.message}</span>
+        </div>
       </div>
     </motion.div>
   );
@@ -131,23 +131,6 @@ const Demo = () => {
           }}
         />
         <div className='flex h-full w-full items-start'>
-          {liveDetails && messages.length != 0 && (
-            <div className='items-center flex flex-col justify-center w-full'>
-              <Image
-                src={liveDetails.thumbnail}
-                width='0'
-                height='0'
-                sizes='100vw'
-                style={{ width: '320px', height: 'auto' }}
-                alt='thumbnail'
-                priority
-              />
-              <div>{liveDetails.title}</div>
-              <div>Channel Owner Name: {liveDetails.channelName}</div>
-              <div>Channel Profile URL: {liveDetails.channelUrl}</div>
-            </div>
-          )}
-
           {messages.length != 0 && (
             <AnimatePresence>
               <div className='flex h-full w-full flex-col overflow-y-auto overflow-x-hidden pr-2'>
