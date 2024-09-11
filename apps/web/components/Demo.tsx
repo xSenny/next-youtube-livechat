@@ -116,7 +116,7 @@ const Demo = () => {
   }, [enableAutoScroll, messages.length]);
 
   return (
-    <div className='z-40 mt-4 flex h-[calc(100dvh-10rem)] w-[calc(100dvw-10rem)] flex-col items-center justify-start'>
+    <div className='z-40 mt-4 flex h-screen w-[calc(100dvw-10rem)] flex-col items-center justify-start'>
       <div className='flex h-full w-full flex-col overflow-y-auto overflow-x-hidden gap-4'>
         <UrlInput
           isLoading={isLoading}
