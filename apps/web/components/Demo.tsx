@@ -103,7 +103,7 @@ const Demo = ({parsedUrl}: {parsedUrl?: string}) => {
   );
 
   const { messages, liveDetails } = useLiveChat({
-    parsedUrl,
+    url: parsedUrl,
     isReady,
     onBeforeStart,
     onStart,
