@@ -72,8 +72,11 @@ const RowRenderer = ({
 };
 
 const Demo = ({parsedUrl}: {parsedUrl?: string}) => {
+
+  console.log(parsedUrl, 'tffff')
   const router = useRouter()
-  const { isReady, isLoading, setUrl, setIsReady, setIsLoading } =
+  const [url, setUrl] = useState(parsedUrl)
+  const { isReady, isLoading, setIsReady, setIsLoading } =
     useDemoStore();
   const listRef = useRef<List>(null);
   const [enableAutoScroll, setEnableAutoScroll] = useState<boolean>(false);
@@ -97,13 +100,13 @@ const Demo = ({parsedUrl}: {parsedUrl?: string}) => {
       });
       setIsLoading(false);
       setIsReady(false);
-      setUrl();
+      setUrl(undefined);
     },
     [setIsLoading, setIsReady, setUrl, toast]
   );
 
   const { messages, liveDetails } = useLiveChat({
-    url: parsedUrl,
+    url,
     isReady,
     onBeforeStart,
     onStart,
