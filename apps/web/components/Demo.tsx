@@ -59,7 +59,7 @@ const RowRenderer = ({
             height={6}
           />
         </Avatar>
-        <div className='rounded-md bg-green-400 p-3'>
+        <div className='rounded-md bg-green-400 p-3 flex gap-2'>
           <div className='rounded-lg bg-primary mb-2 px-2 w-fit'>
             {message.name}
           </div>
@@ -117,7 +117,7 @@ const Demo = () => {
 
   return (
     <div className='z-40 mt-4 flex h-[calc(100dvh-10rem)] w-[calc(100dvw-10rem)] flex-col items-center justify-start'>
-      <div className='flex p-4 h-full w-full flex-col overflow-y-auto overflow-x-hidden gap-4'>
+      <div className='flex h-full w-full flex-col overflow-y-auto overflow-x-hidden gap-4'>
         <UrlInput
           isLoading={isLoading}
           isReady={isReady}
