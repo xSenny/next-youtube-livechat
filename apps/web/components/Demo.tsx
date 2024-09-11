@@ -12,6 +12,7 @@ import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/components/ui/use-toast';
 
 import { cn } from '@/lib/utils';
+import { useRouter } from 'next/navigation';
 
 interface RowRendererProps extends ListRowProps {
   messages: useLiveChatMessageType[];
@@ -70,8 +71,9 @@ const RowRenderer = ({
   );
 };
 
-const Demo = () => {
-  const { isReady, isLoading, setUrl, url, setIsReady, setIsLoading } =
+const Demo = ({parsedUrl}: {parsedUrl?: string}) => {
+  const router = useRouter()
+  const { isReady, isLoading, setUrl, setIsReady, setIsLoading } =
     useDemoStore();
   const listRef = useRef<List>(null);
   const [enableAutoScroll, setEnableAutoScroll] = useState<boolean>(false);
@@ -101,7 +103,7 @@ const Demo = () => {
   );
 
   const { messages, liveDetails } = useLiveChat({
-    url,
+    parsedUrl,
     isReady,
     onBeforeStart,
     onStart,
@@ -122,12 +124,7 @@ const Demo = () => {
           isLoading={isLoading}
           isReady={isReady}
           handleUrlSubmit={async (url: string) => {
-            if (!isReady) {
-              setUrl(url);
-              return;
-            }
-            setIsReady(false);
-            setUrl();
+            router.push(`/${url}`)
           }}
         />
         <div className='flex h-full w-full items-start'>
