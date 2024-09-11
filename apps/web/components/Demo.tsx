@@ -156,7 +156,7 @@ const Demo = () => {
                       rowHeight={(page: Index) => {
                         const cc = messages[page.index].characterCount;
                         // max word = 200
-                        const baseHeight = 100;
+                        const baseHeight = 60;
                         const rowHeight = 22;
                         const row = cc / 40;
                         return baseHeight + row * rowHeight;
