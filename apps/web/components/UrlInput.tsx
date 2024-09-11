@@ -42,7 +42,7 @@ const UrlInput = forwardRef<HTMLInputElement, UrlInputProps>(
           <Input
             type='url'
             id='yt-url'
-            placeholder='for example: https://www.youtube.com/watch?v=YxdntrSbAcg'
+            placeholder='for example: YxdntrSbAcg'
             className={cn('pr-10', className)}
             ref={forwardedRef}
             disabled={isReady}
