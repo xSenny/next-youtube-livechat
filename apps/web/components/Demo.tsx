@@ -47,7 +47,7 @@ const RowRenderer = ({
         ...style,
       }}
       className={cn(
-        'flex flex-col items-end justify-center gap-2 whitespace-pre-wrap p-4'
+        'flex flex-col items-start justify-center gap-2 whitespace-pre-wrap p-4'
       )}
     >
       <div className='flex items-center gap-3'>
@@ -59,7 +59,7 @@ const RowRenderer = ({
             height={6}
           />
         </Avatar>
-        <div className='rounded-md bg-green-500 p-3'>
+        <div className='rounded-md bg-green-400 p-3'>
           <div className='rounded-lg bg-primary mb-2 px-2 w-fit'>
             {message.name}
           </div>
