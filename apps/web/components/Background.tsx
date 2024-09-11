@@ -26,19 +26,9 @@ const BackgroundGradient = ({ children }: PropsWithChildren) => (
 );
 
 const Background = () => (
-  <BackgroundGradient>
-    <CenterContainer>
-      <DotPattern>
-        <Image
-          className='pointer-events-none z-[1] select-none rounded-xl object-cover grayscale'
-          src='/sora-bg.png'
-          alt='bg image'
-          fill
-          priority
-        />
-      </DotPattern>
-    </CenterContainer>
-  </BackgroundGradient>
+  <div className="fixed h-screen w-screen bg-green-400">
+
+  </div>
 );
 
 export default Background;
