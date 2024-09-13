@@ -130,10 +130,19 @@ const Demo = ({ parsedUrl }: { parsedUrl?: string }) => {
       );
 
       // Merge newMessages with prevParsedMessages, preserving added messages
-      const mergedMessages = [
-        ...prevMessagesMap.values(),
-        ...newMessagesMap.values(),
-      ];
+      const mergedMessagesMap = new Map([
+        ...prevMessagesMap,
+        ...newMessagesMap,
+      ]);
+
+      // Convert the map back to an array
+      const mergedMessages = Array.from(mergedMessagesMap.values()).map(
+        (msg) => ({
+          name: msg.name,
+          message: msg.message,
+          characterCount: msg.characterCount,
+        })
+      );
 
       console.log(prevParsedMessages, 'prev parsed');
       console.log(newMessagesMap, 'new messages');
