@@ -121,7 +121,7 @@ const Demo = ({ parsedUrl }: { parsedUrl?: string }) => {
 
   useEffect(() => {
     setParsedMessages((prevParsedMessages) => {
-      const newMessages = messages.map((m) => ({
+      const newMessages = messages.map((m: {name: string, message: string, characterCount: number}) => ({
         name: m.name,
         message: m.message,
         characterCount: m.characterCount,
@@ -132,13 +132,18 @@ const Demo = ({ parsedUrl }: { parsedUrl?: string }) => {
         prevParsedMessages.filter(
           (pm) =>
             !newMessages.some(
-              (nm) => nm.message === pm.message && nm.name === pm.name
+              (nm: {message: string, name: string}) => nm.message === pm.message && nm.name === pm.name
             )
         )
       );
 
+      console.log('we"ve setted it up to', mergedMessages)
+
       return mergedMessages;
     });
+  }, [messages])
+
+  useEffect(() => {
 
     if (!enableAutoScroll) return;
     if (listRef.current) {
