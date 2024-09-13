@@ -121,25 +121,23 @@ const Demo = ({ parsedUrl }: { parsedUrl?: string }) => {
 
   useEffect(() => {
     setParsedMessages((prevParsedMessages) => {
-      const newMessages = messages.map((m: {name: string, message: string, characterCount: number}) => ({
-        name: m.name,
-        message: m.message,
-        characterCount: m.characterCount,
-      }));
+      const newMessagesMap = new Map(
+        messages.map((m) => [`${m.name}-${m.message}`, m])
+      );
 
-      console.log(prevParsedMessages, 'prev parsed')
-      console.log(newMessages, 'new messages')
+      const prevMessagesMap = new Map(
+        prevParsedMessages.map((pm) => [`${pm.name}-${pm.message}`, pm])
+      );
 
       // Merge newMessages with prevParsedMessages, preserving added messages
-      const mergedMessages = newMessages.concat(
-        prevParsedMessages.filter(
-          (pm) =>
-            !newMessages.some(
-              (nm) => nm.message === pm.message && nm.name === pm.name
-            )
-        )
-      );
-      console.log(mergedMessages, "merged")
+      const mergedMessages = [
+        ...prevMessagesMap.values(),
+        ...newMessagesMap.values(),
+      ];
+
+      console.log(prevParsedMessages, 'prev parsed');
+      console.log(newMessagesMap, 'new messages');
+      console.log(mergedMessages, 'merged');
       return mergedMessages;
     });
   }, [messages])
