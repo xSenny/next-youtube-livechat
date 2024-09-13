@@ -4,6 +4,7 @@ import { useDemoStore } from '@/stores/store';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useLiveChat, useLiveChatMessageType } from 'next-youtube-livechat';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AutoSizer, Index, List, ListRowProps } from 'react-virtualized';
 
@@ -12,7 +13,6 @@ import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/components/ui/use-toast';
 
 import { cn } from '@/lib/utils';
-import { useRouter } from 'next/navigation';
 
 interface RowRendererProps extends ListRowProps {
   messages: useLiveChatMessageType[];
@@ -63,12 +63,10 @@ const RowRenderer = ({
   );
 };
 
-const Demo = ({parsedUrl}: {parsedUrl?: string}) => {
-
-  const router = useRouter()
-  const [url, setUrl] = useState(parsedUrl)
-  const { isReady, isLoading, setIsReady, setIsLoading } =
-    useDemoStore();
+const Demo = ({ parsedUrl }: { parsedUrl?: string }) => {
+  const router = useRouter();
+  const [url, setUrl] = useState(parsedUrl);
+  const { isReady, isLoading, setIsReady, setIsLoading } = useDemoStore();
   const listRef = useRef<List>(null);
   const [enableAutoScroll, setEnableAutoScroll] = useState<boolean>(false);
   const { toast } = useToast();
@@ -105,17 +103,20 @@ const Demo = ({parsedUrl}: {parsedUrl?: string}) => {
   });
 
   const sendMessage = (name: string, message: string) => {
-    console.log(message, name, "Sent a message")
-    messages.push({name, message})
-  }
+    console.log(message, name, 'Sent a message');
+    messages.push({ name, message });
+  };
 
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      console.log('setting the function')
+      //@ts-ignore
+      window.sendMessage = sendMessage;
+    }
     if (!enableAutoScroll) return;
     if (listRef?.current) {
       listRef.current.scrollToRow(messages.length - 1);
     }
-    //@ts-ignore
-    window.sendMessage = sendMessage;
   }, [enableAutoScroll, messages.length]);
 
   return (
@@ -125,7 +126,7 @@ const Demo = ({parsedUrl}: {parsedUrl?: string}) => {
           isLoading={isLoading}
           isReady={isReady}
           handleUrlSubmit={async (url: string) => {
-            router.push(`/${url}`)
+            router.push(`/${url}`);
           }}
         />
         <div className='flex h-full w-full items-start'>
