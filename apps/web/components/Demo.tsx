@@ -131,7 +131,14 @@ const Demo = ({ parsedUrl }: { parsedUrl?: string }) => {
       console.log(newMessages, 'new messages')
 
       // Merge newMessages with prevParsedMessages, preserving added messages
-      const mergedMessages = prevParsedMessages.concat(newMessages)
+      const mergedMessages = newMessages.concat(
+        prevParsedMessages.filter(
+          (pm) =>
+            !newMessages.some(
+              (nm) => nm.message === pm.message && nm.name === pm.name
+            )
+        )
+      );
       console.log(mergedMessages, "merged")
       return mergedMessages;
     });
