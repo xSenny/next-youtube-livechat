@@ -112,7 +112,7 @@ const Demo = ({ parsedUrl }: { parsedUrl?: string }) => {
       //@ts-ignore
       window.sendMessage = sendMessage;
     }
-  }, [sendMessage]);
+  }, []);
 
   useEffect(() => {
     setParsedMessages(
