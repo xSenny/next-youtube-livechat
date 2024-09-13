@@ -52,14 +52,6 @@ const RowRenderer = ({
       )}
     >
       <div className='flex items-center gap-3'>
-        <Avatar className='flex items-center justify-center'>
-          <AvatarImage
-            src={message.avatar}
-            alt={message.name}
-            width={6}
-            height={6}
-          />
-        </Avatar>
         <div className='rounded-md bg-green-400 p-3 flex gap-2'>
           <div className='rounded-lg bg-primary mb-2 px-2 w-fit'>
             {message.name}
@@ -73,7 +65,6 @@ const RowRenderer = ({
 
 const Demo = ({parsedUrl}: {parsedUrl?: string}) => {
 
-  console.log(parsedUrl, 'tffff')
   const router = useRouter()
   const [url, setUrl] = useState(parsedUrl)
   const { isReady, isLoading, setIsReady, setIsLoading } =
@@ -113,11 +104,18 @@ const Demo = ({parsedUrl}: {parsedUrl?: string}) => {
     onError,
   });
 
+  const sendMessage = (name: string, message: string) => {
+    console.log(message, name, "Sent a message")
+    messages.push({name, message})
+  }
+
   useEffect(() => {
     if (!enableAutoScroll) return;
     if (listRef?.current) {
       listRef.current.scrollToRow(messages.length - 1);
     }
+    //@ts-ignore
+    window.sendMessage = sendMessage;
   }, [enableAutoScroll, messages.length]);
 
   return (
