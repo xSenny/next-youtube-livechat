@@ -7,15 +7,10 @@ import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AutoSizer, Index, List, ListRowProps } from 'react-virtualized';
 
-
-
 import UrlInput from '@/components/UrlInput';
 import { useToast } from '@/components/ui/use-toast';
 
-
-
 import { cn } from '@/lib/utils';
-
 
 interface RowRendererProps extends ListRowProps {
   messages: useLiveChatMessageType[];
@@ -71,6 +66,7 @@ const Demo = ({ parsedUrl }: { parsedUrl?: string }) => {
   const [parsedMessages, setParsedMessages] = useState<
     { name: string; message: string; characterCount: number }[]
   >([]);
+  const [lastMessagesLength, setLastMessagesLength] = useState<number>(0);
 
   const onBeforeStart = useCallback(() => {
     setIsLoading(true);
@@ -121,43 +117,35 @@ const Demo = ({ parsedUrl }: { parsedUrl?: string }) => {
 
   useEffect(() => {
     setParsedMessages((prevParsedMessages) => {
-      const newMessagesMap = new Map(
-        messages.map((m) => [`${m.name}-${m.message}`, m])
-      );
+      // Get new messages starting from the index of the last length
+      const newMessages = messages.slice(lastMessagesLength);
 
-      const prevMessagesMap = new Map(
-        prevParsedMessages.map((pm) => [`${pm.name}-${pm.message}`, pm])
-      );
+      // Update the parsedMessages with new messages
+      const updatedMessages = [
+        ...prevParsedMessages,
+        ...newMessages.map((m) => ({
+          name: m.name,
+          message: m.message,
+          characterCount: m.characterCount,
+        })),
+      ];
 
-      // Merge newMessages with prevParsedMessages, preserving added messages
-      const mergedMessagesMap = new Map([
-        ...prevMessagesMap,
-        ...newMessagesMap,
-      ]);
-
-      // Convert the map back to an array
-      const mergedMessages = Array.from(mergedMessagesMap.values()).map(
-        (msg) => ({
-          name: msg.name,
-          message: msg.message,
-          characterCount: msg.characterCount,
-        })
-      );
+      // Update the last messages length
+      setLastMessagesLength(messages.length);
 
       console.log(prevParsedMessages, 'prev parsed');
-      console.log(newMessagesMap, 'new messages');
-      console.log(mergedMessages, 'merged');
-      return mergedMessages;
+      console.log(newMessages, 'new messages');
+      console.log(updatedMessages, 'updated');
+      return updatedMessages;
     });
-  }, [messages])
+  }, [messages]);
 
   useEffect(() => {
-
     if (!enableAutoScroll) return;
     if (listRef.current) {
-      listRef.current.scrollToRow(messages.length - 1);
+      listRef.current.scrollToRow(parsedMessages.length - 1);
     }
-  }, [enableAutoScroll, messages]);
+  }, [enableAutoScroll, parsedMessages.length]);
 
   return (
     <div className='z-40 mt-4 flex h-screen w-[calc(100dvw-10rem)] flex-col items-center justify-start'>
@@ -170,7 +158,7 @@ const Demo = ({ parsedUrl }: { parsedUrl?: string }) => {
           }}
         />
         <div className='flex h-full w-full items-start'>
-          {messages.length !== 0 && (
+          {parsedMessages.length !== 0 && (
             <AnimatePresence>
               <div className='flex h-full w-full flex-col overflow-y-auto overflow-x-hidden pr-2'>
                 <AutoSizer>
@@ -180,17 +168,6 @@ const Demo = ({ parsedUrl }: { parsedUrl?: string }) => {
                       width={width}
                       height={height}
                       rowCount={parsedMessages.length}
-                      // onScroll={({ clientHeight, scrollHeight, scrollTop }) => {
-                      //   if (scrollTop + clientHeight + 20 >= scrollHeight) {
-                      //     if (!enableAutoScroll) {
-                      //       setEnableAutoScroll(true);
-                      //     }
-                      //   } else {
-                      //     if (enableAutoScroll) {
-                      //       setEnableAutoScroll(false);
-                      //     }
-                      //   }
-                      // }}
                       rowHeight={({ index }) => {
                         const cc = parsedMessages[index].characterCount;
                         const baseHeight = 60;
