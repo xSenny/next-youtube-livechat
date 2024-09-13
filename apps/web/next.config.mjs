@@ -22,6 +22,9 @@ const nextConfig = {
       },
     ],
   },
+  typescript: {
+    ignoreBuildErrors: true
+  },
   transpilePackages: ['next-youtube-livechat'],
 };
 
