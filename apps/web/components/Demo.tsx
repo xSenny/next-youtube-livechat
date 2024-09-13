@@ -170,7 +170,7 @@ const Demo = ({ parsedUrl }: { parsedUrl?: string }) => {
                       rowCount={parsedMessages.length}
                       rowHeight={({ index }) => {
                         const cc = parsedMessages[index].characterCount;
-                        const baseHeight = 60;
+                        const baseHeight = 10;
                         const rowHeight = 22;
                         const row = cc / 40;
                         return baseHeight + row * rowHeight;
