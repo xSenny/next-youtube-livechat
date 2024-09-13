@@ -110,13 +110,17 @@ const Demo = ({ parsedUrl }: { parsedUrl?: string }) => {
   const [parsedMessages, setParsedMessages] = useState<{name: string, message: string, characterCount: number}[]>([])
 
   const sendMessage = (name: string, message: string) => {
-    console.log(message, name, 'Sent a message');
+    console.log(parsedMessages);
     setParsedMessages([
       ...parsedMessages,
       { name, message, characterCount: message.length },
     ]);
-    console.log(messages)
+    console.log(parsedMessages)
   };
+
+  useEffect(() => {
+    console.log(parsedMessages, 'parsed messages got updated')
+  }, [parsedMessages])
 
 
   useEffect(() => {
