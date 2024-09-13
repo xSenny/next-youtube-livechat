@@ -3,21 +3,14 @@
 import { useDemoStore } from '@/stores/store';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useLiveChat, useLiveChatMessageType } from 'next-youtube-livechat';
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AutoSizer, Index, List, ListRowProps } from 'react-virtualized';
 
-
-
 import UrlInput from '@/components/UrlInput';
-import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/components/ui/use-toast';
 
-
-
 import { cn } from '@/lib/utils';
-
 
 interface RowRendererProps extends ListRowProps {
   messages: useLiveChatMessageType[];
@@ -30,7 +23,6 @@ const RowRenderer = ({
   childKey,
   style,
 }: RowRendererProps) => {
-  // get single row
   const message = messages[index];
   return (
     <motion.div
@@ -47,11 +39,7 @@ const RowRenderer = ({
           duration: 0.5,
         },
       }}
-      style={{
-        originX: 0.5,
-        originY: 0.5,
-        ...style,
-      }}
+      style={{ originX: 0.5, originY: 0.5, ...style }}
       className={cn(
         'flex flex-col items-start justify-center gap-2 whitespace-pre-wrap'
       )}
@@ -75,6 +63,9 @@ const Demo = ({ parsedUrl }: { parsedUrl?: string }) => {
   const listRef = useRef<List>(null);
   const [enableAutoScroll, setEnableAutoScroll] = useState<boolean>(false);
   const { toast } = useToast();
+  const [parsedMessages, setParsedMessages] = useState<
+    { name: string; message: string; characterCount: number }[]
+  >([]);
 
   const onBeforeStart = useCallback(() => {
     setIsLoading(true);
@@ -89,7 +80,7 @@ const Demo = ({ parsedUrl }: { parsedUrl?: string }) => {
     (err: Error) => {
       toast({
         title: '🚨Oops...',
-        description: (err as unknown as Error).message,
+        description: err.message,
         variant: 'destructive',
       });
       setIsLoading(false);
@@ -99,7 +90,7 @@ const Demo = ({ parsedUrl }: { parsedUrl?: string }) => {
     [setIsLoading, setIsReady, setUrl, toast]
   );
 
-  const { messages, liveDetails } = useLiveChat({
+  const { messages } = useLiveChat({
     url,
     isReady,
     onBeforeStart,
@@ -108,26 +99,35 @@ const Demo = ({ parsedUrl }: { parsedUrl?: string }) => {
   });
 
   const sendMessage = (name: string, message: string) => {
-    console.log(message, name, 'Sent a message', messages);
-    messages.push({ name, message, characterCount: message.length });
-    console.log(messages)
+    console.log('Sending message:', { name, message });
+    setParsedMessages((prevMessages) => [
+      ...prevMessages,
+      { name, message, characterCount: message.length },
+    ]);
   };
-
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      console.log('setting the function');
+      console.log('Setting sendMessage function on window');
       //@ts-ignore
       window.sendMessage = sendMessage;
     }
-  }, [])
+  }, [sendMessage]);
+
   useEffect(() => {
-    
+    setParsedMessages(
+      messages.map((m) => ({
+        name: m.name,
+        message: m.message,
+        characterCount: m.characterCount,
+      }))
+    );
+
     if (!enableAutoScroll) return;
-    if (listRef?.current) {
+    if (listRef.current) {
       listRef.current.scrollToRow(messages.length - 1);
     }
-  }, [enableAutoScroll, messages.length]);
+  }, [enableAutoScroll, messages]);
 
   return (
     <div className='z-40 mt-4 flex h-screen w-[calc(100dvw-10rem)] flex-col items-center justify-start'>
@@ -140,7 +140,7 @@ const Demo = ({ parsedUrl }: { parsedUrl?: string }) => {
           }}
         />
         <div className='flex h-full w-full items-start'>
-          {messages.length != 0 && (
+          {messages.length !== 0 && (
             <AnimatePresence>
               <div className='flex h-full w-full flex-col overflow-y-auto overflow-x-hidden pr-2'>
                 <AutoSizer>
@@ -149,10 +149,9 @@ const Demo = ({ parsedUrl }: { parsedUrl?: string }) => {
                       ref={listRef}
                       width={width}
                       height={height}
-                      rowCount={messages.length}
+                      rowCount={parsedMessages.length}
                       onScroll={({ clientHeight, scrollHeight, scrollTop }) => {
                         if (scrollTop + clientHeight + 20 >= scrollHeight) {
-                          // when scroll to bottom list, keep scroll to bottom on new message receive
                           if (!enableAutoScroll) {
                             setEnableAutoScroll(true);
                           }
@@ -162,9 +161,8 @@ const Demo = ({ parsedUrl }: { parsedUrl?: string }) => {
                           }
                         }
                       }}
-                      rowHeight={(page: Index) => {
-                        const cc = messages[page.index].characterCount;
-                        // max word = 200
+                      rowHeight={({ index }) => {
+                        const cc = parsedMessages[index].characterCount;
                         const baseHeight = 60;
                         const rowHeight = 22;
                         const row = cc / 40;
@@ -176,7 +174,7 @@ const Demo = ({ parsedUrl }: { parsedUrl?: string }) => {
                           {...props}
                           key={props.key}
                           childKey={props.key}
-                          messages={messages}
+                          messages={parsedMessages}
                         />
                       )}
                     />
