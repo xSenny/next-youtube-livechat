@@ -45,7 +45,7 @@ const RowRenderer = ({
       )}
     >
       <div className='flex items-center gap-3'>
-        <div className='rounded-md bg-green-400 p-3 flex gap-2'>
+        <div className='rounded-md bg-green-400 flex gap-2'>
           <div className='rounded-lg bg-primary mb-2 px-2 w-fit'>
             {message.name}
           </div>
