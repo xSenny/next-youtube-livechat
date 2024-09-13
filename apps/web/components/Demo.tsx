@@ -7,10 +7,15 @@ import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AutoSizer, Index, List, ListRowProps } from 'react-virtualized';
 
+
+
 import UrlInput from '@/components/UrlInput';
 import { useToast } from '@/components/ui/use-toast';
 
+
+
 import { cn } from '@/lib/utils';
+
 
 interface RowRendererProps extends ListRowProps {
   messages: useLiveChatMessageType[];
@@ -115,13 +120,25 @@ const Demo = ({ parsedUrl }: { parsedUrl?: string }) => {
   }, []);
 
   useEffect(() => {
-    setParsedMessages(
-      messages.map((m) => ({
+    setParsedMessages((prevParsedMessages) => {
+      const newMessages = messages.map((m) => ({
         name: m.name,
         message: m.message,
         characterCount: m.characterCount,
-      }))
-    );
+      }));
+
+      // Merge newMessages with prevParsedMessages, preserving added messages
+      const mergedMessages = newMessages.concat(
+        prevParsedMessages.filter(
+          (pm) =>
+            !newMessages.some(
+              (nm) => nm.message === pm.message && nm.name === pm.name
+            )
+        )
+      );
+
+      return mergedMessages;
+    });
 
     if (!enableAutoScroll) return;
     if (listRef.current) {
