@@ -66,7 +66,7 @@ const Demo = ({ parsedUrl }: { parsedUrl?: string }) => {
   const [url, setUrl] = useState(parsedUrl);
   const { isReady, isLoading, setIsReady, setIsLoading } = useDemoStore();
   const listRef = useRef<List>(null);
-  const [enableAutoScroll, setEnableAutoScroll] = useState<boolean>(false);
+  const [enableAutoScroll, setEnableAutoScroll] = useState<boolean>(true);
   const { toast } = useToast();
   const [parsedMessages, setParsedMessages] = useState<
     { name: string; message: string; characterCount: number }[]
@@ -127,9 +127,12 @@ const Demo = ({ parsedUrl }: { parsedUrl?: string }) => {
         characterCount: m.characterCount,
       }));
 
+      console.log(prevParsedMessages, 'prev parsed')
+      console.log(newMessages, 'new messages')
+
       // Merge newMessages with prevParsedMessages, preserving added messages
       const mergedMessages = prevParsedMessages.concat(newMessages)
-
+      console.log(mergedMessages, "merged")
       return mergedMessages;
     });
   }, [messages])
@@ -163,17 +166,17 @@ const Demo = ({ parsedUrl }: { parsedUrl?: string }) => {
                       width={width}
                       height={height}
                       rowCount={parsedMessages.length}
-                      onScroll={({ clientHeight, scrollHeight, scrollTop }) => {
-                        if (scrollTop + clientHeight + 20 >= scrollHeight) {
-                          if (!enableAutoScroll) {
-                            setEnableAutoScroll(true);
-                          }
-                        } else {
-                          if (enableAutoScroll) {
-                            setEnableAutoScroll(false);
-                          }
-                        }
-                      }}
+                      // onScroll={({ clientHeight, scrollHeight, scrollTop }) => {
+                      //   if (scrollTop + clientHeight + 20 >= scrollHeight) {
+                      //     if (!enableAutoScroll) {
+                      //       setEnableAutoScroll(true);
+                      //     }
+                      //   } else {
+                      //     if (enableAutoScroll) {
+                      //       setEnableAutoScroll(false);
+                      //     }
+                      //   }
+                      // }}
                       rowHeight={({ index }) => {
                         const cc = parsedMessages[index].characterCount;
                         const baseHeight = 60;
