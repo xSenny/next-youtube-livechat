@@ -8,11 +8,16 @@ import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AutoSizer, Index, List, ListRowProps } from 'react-virtualized';
 
+
+
 import UrlInput from '@/components/UrlInput';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/components/ui/use-toast';
 
+
+
 import { cn } from '@/lib/utils';
+
 
 interface RowRendererProps extends ListRowProps {
   messages: useLiveChatMessageType[];
@@ -102,17 +107,33 @@ const Demo = ({ parsedUrl }: { parsedUrl?: string }) => {
     onError,
   });
 
+  const [parsedMessages, setParsedMessages] = useState<{name: string, message: string, characterCount: number}[]>([])
+
   const sendMessage = (name: string, message: string) => {
     console.log(message, name, 'Sent a message');
-    messages.push({ name, message });
+    setParsedMessages([
+      ...parsedMessages,
+      { name, message, characterCount: message.length },
+    ]);
+    console.log(messages)
   };
+
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      console.log('setting the function')
+      console.log('setting the function');
       //@ts-ignore
       window.sendMessage = sendMessage;
     }
+  }, [])
+  useEffect(() => {
+    setParsedMessages(messages.map((m: {message: string, name: string, characterCount: number}) => {
+      return {
+        name: m.name,
+        message: m.message,
+        characterCount: m.characterCount
+      }
+    }))
     if (!enableAutoScroll) return;
     if (listRef?.current) {
       listRef.current.scrollToRow(messages.length - 1);
@@ -139,7 +160,7 @@ const Demo = ({ parsedUrl }: { parsedUrl?: string }) => {
                       ref={listRef}
                       width={width}
                       height={height}
-                      rowCount={messages.length}
+                      rowCount={parsedMessages.length}
                       onScroll={({ clientHeight, scrollHeight, scrollTop }) => {
                         if (scrollTop + clientHeight + 20 >= scrollHeight) {
                           // when scroll to bottom list, keep scroll to bottom on new message receive
@@ -153,7 +174,7 @@ const Demo = ({ parsedUrl }: { parsedUrl?: string }) => {
                         }
                       }}
                       rowHeight={(page: Index) => {
-                        const cc = messages[page.index].characterCount;
+                        const cc = parsedMessages[page.index].characterCount;
                         // max word = 200
                         const baseHeight = 60;
                         const rowHeight = 22;
@@ -166,7 +187,7 @@ const Demo = ({ parsedUrl }: { parsedUrl?: string }) => {
                           {...props}
                           key={props.key}
                           childKey={props.key}
-                          messages={messages}
+                          messages={parsedMessages}
                         />
                       )}
                     />
