@@ -108,8 +108,8 @@ const Demo = ({ parsedUrl }: { parsedUrl?: string }) => {
   });
 
   const sendMessage = (name: string, message: string) => {
-    console.log(message, name, 'Sent a message');
-    messages.push({ name, message });
+    console.log(message, name, 'Sent a message', messages);
+    messages.push({ name, message, characterCount: message.length });
     console.log(messages)
   };
 
